@@ -618,3 +618,144 @@ Take the user's scattered weekly reflections — a mix of notes, thoughts, frust
 > 1. 用户认证系统
 > 2. 数据库迁移脚本
 > 3. API 文档生成
+
+---
+
+## 范例 10: 新山 AI 讲座 → Deep Mode（商业与策略）
+
+同一段需求，普通 `pc` 只整理用户已经说出的条件。`pc deep` / `pc 深度` 先做专家预分析，再把原始素材、方法和外部证据写进 prompt。多出来的要求一律标成 `addition · 新增`，用户可以整行删掉。预分析可以比最终 prompt 多列几条；不改变素材、方法、验证或结论的条目不写进 prompt。更深入，不是更长。
+
+### 用户输入 (Before) — English
+> pc deep I'm thinking of running paid AI seminars in Johor Bahru for accountants and SME owners. Weekend classes, about RM200–400 a head. Write a prompt that tells me if this business is viable. Deeper, not longer.
+
+### 用户输入 (Before) — 中文
+> pc 深度 我想在新山办 AI 讲座，对象是会计师和中小企业老板，周末班，一个人大概收 200 到 400 令吉。帮我写个 prompt，判断这门生意能不能做。我要更深入的版本，不是更长的版本。
+
+### AI 推断与补全
+- Mode: Deep Mode（`pc deep` / `pc 深度`）。同一段话若只用 `pc`，prompt 只保留城市、周末班、价位、两类听众，不加入下面标成新增的素材和方法。
+- Goal: 一份能得出「做 / 不做 / 只有在某条件下才做」的评估 prompt
+- Domain: 新山短期专业培训 / short professional courses in Johor Bahru
+- 用户已给定、不加新增标签：新山、周末班、RM200–400、会计师与中小企业老板
+- 预分析里「复训才赚钱」这一条不写入 prompt：它不改变这一次的盈亏平衡算法
+
+### 专家预分析 (Expert Pre-Analysis) — 改写之前先输出
+
+条目用中文，与获准的五个问题一致。英文 prompt 收下的是同一批 `addition · 新增`。Bullets are in 中文, matching the approved questions. The English prompt below takes in the same additions.
+
+```
+## Expert Pre-Analysis · 专家预分析
+
+Deeper, not longer. · 更深入，不是更长。
+Domain · 领域: 新山短期专业培训 / short professional courses in Johor Bahru
+Original question · 原题: Is a weekend AI seminar in Johor Bahru, at RM200–400 a head, for accountants and SME owners, a viable business?
+
+### (1) 这个领域的顶尖专家会做哪些我没要求的事？
+What a top expert would do that you did not ask for
+1. 把「教室坐满」和「扣除场地、税费、以及你少接的周末业务之后还剩多少」分开。坐满仍可能亏。 — addition · 新增
+2. 会计师买的是 CPE 课时，中小企业老板买的是周一就能用的做法。同一班、同一个价，通常两边都服务不好。 — addition · 新增
+3. 除了第一场公开课，还要看复训和到企业内训。能活下来的通常是第二场，不是第一场。 — addition · 新增
+4. 先核对执业会计师在「AI」课程里可以声称什么、不可以声称什么。 — addition · 新增
+
+### (2) 他们会从哪些最原始的素材入手，而不是我已经整理好的资料？
+Primary sources, not material you already digested
+1. 马来西亚统计局（DOSM）柔佛中小企业与服务业原始表，而不是新闻综述。 — addition · 新增
+2. 马来西亚公司委员会（SSM）里柔佛培训机构的注册检索。 — addition · 新增
+3. HRD Corp 可索赔课程名单和征费规则，直接读 HRD Corp，不读中介落地页。 — addition · 新增
+4. 马来西亚会计师公会（MIA）当年的 CPE 规则，以及 MIA 公开活动列表。 — addition · 新增
+5. 两份 90 天内的新山场地书面报价，加上同类工作坊的公开标价页面。 — addition · 新增
+
+### (3) 他们会用哪些具体的方法和工具？
+Concrete methods and tools
+1. 盈亏平衡人数 =（场地 + 材料 + 广告）/（票价 − 每张票的支付手续费）。分别用 RM200 和 RM400 算。 — addition · 新增
+2. 用经营者一季真正能上课的周末数封顶，不按「每周都开班」算。 — addition · 新增
+3. 一张至少 5 行的同类课程标价表，每行有网址和查看日期。 — addition · 新增
+
+### (4) 除了你我之外，还有什么可以证明结果是正确的？
+External evidence that the result is correct
+1. 一份书面场地报价，日期在 90 天内。 — addition · 新增
+2. HRD Corp 或 MIA 页面，记下网址和打开日期。 — addition · 新增
+3. 至少五个公开标价，每个有链接。 — addition · 新增
+4. 一位会计师和一位中小企业老板的原话：他们会不会付钱。保留笔记，不改写成「市场有需求」。 — addition · 新增
+
+### (5) 哪些关键数据我目前没有，该怎么取得？
+Key data you lack, and how to get it
+1. 一季能上课的周末数，以及做到多少月利润才值得做。问经营者本人，不要编。 — addition · 新增
+2. 新山半天课室现价。向两家酒店或培训中心要书面报价。 — addition · 新增
+3. 目标雇主是否缴纳 HRD Corp 征费。查 HRD Corp 雇主查询，或直接问两家公司。 — addition · 新增
+4. 会计师今年能认列的 CPE。读当年的 MIA CPE 指南。 — addition · 新增
+5. 经营者平时一个周末的收费标准，用来和「教室坐满」比较。由经营者提供。 — addition · 新增
+```
+
+### 输出 (After) — English
+```
+## Role
+You are a training-business assessor for short professional courses in Johor Bahru. You judge whether a weekend seminar covers its costs and the operator's time.
+
+## Task
+Decide whether a weekend AI seminar in Johor Bahru, priced at RM200–400 a person for accountants and SME owners, is viable. Use the primary sources, the break-even method, and the external checks named below. End with Go, No-go, or Go only if.
+
+## Context
+- Fixed by the user, unlabeled: Johor Bahru, weekend classroom, RM200–400 a person, two audiences (accountants and SME owners).
+- Primary sources (addition · 新增): DOSM Johor SME and services tables; SSM search for Johor training providers; the HRD Corp claimable-course list and levy rules; the current MIA CPE guide and public event list; two written JB venue quotes dated within 90 days.
+- Do not start from a brochure, a blog roundup, or memory of "the market".
+
+## Steps
+1. Price the two audiences separately (addition · 新增). Accountants buy CPE hours. SME owners buy something they can use on Monday.
+2. Build the break-even (addition · 新增). Seats = (venue + materials + ads) / (price − payment fee per seat). Solve it at RM200 and at RM400.
+3. Cap the result by weekends the operator can teach in a quarter (addition · 新增). Ask for that number. Do not invent it.
+4. Record at least five public prices of comparable JB or KL workshops. Each row needs a URL and the date checked (addition · 新增).
+5. Write the conclusion only after every figure in steps 2–4 has a source.
+
+## Constraints
+- Never invent a price, a headcount, a levy rule, or a CPE rule. Mark it missing and name the source that would supply it.
+- Do not call the class CPE-recognized or HRD-claimable unless the cited MIA or HRD Corp page says so (addition · 新增).
+- One page. The depth is the sources and the break-even, not a longer essay.
+
+## Output Format
+- ## Sources — name, URL or document, date
+- ## Break-even — seats and weekends at RM200 and at RM400
+- ## Conclusion — one sentence, exactly one of: Go, No-go, or Go only if [condition]. Then one sentence naming the single fact that would flip it.
+
+## Verification
+- Every break-even number traces to a listed source or to a figure the user supplied. None comes from model memory.
+- The venue line cites a written quote dated within 90 days, or the conclusion says that quote is still missing.
+- Any HRD Corp or MIA claim cites the page URL and the date it was read.
+- The conclusion is exactly Go, No-go, or Go only if, and it names the flip condition.
+```
+
+### 输出 (After) — 中文
+```
+## 角色
+你是一名评估新山短期专业课程的人。你判断一场周末讲座在扣掉成本和经营者的时间之后还站不站得住。
+
+## 任务
+判断在新山办一场周末 AI 讲座、向会计师和中小企业老板收费每人 200 至 400 令吉，这门生意能不能做。必须使用下面点名的原始素材、盈亏平衡方法和外部核对。结尾只能是：做、不做、或只有在某条件下才做。
+
+## 背景
+- 用户已确定、不加标签：新山、周末面授、每人 200–400 令吉、两类听众（会计师、中小企业老板）。
+- 原始素材（addition · 新增）：DOSM 柔佛中小企业与服务业原始表；SSM 对柔佛培训机构的注册检索；HRD Corp 可索赔课程名单和征费规则；当年 MIA CPE 指南和公开活动列表；两份 90 天内的新山场地书面报价。
+- 不要从宣传册、博客综述或模型对「市场」的记忆入手。
+
+## 步骤
+1. 两类听众分开计价（addition · 新增）。会计师买 CPE 课时，中小企业老板买周一就能用的做法。
+2. 做盈亏平衡（addition · 新增）。人数 =（场地 + 材料 + 广告）/（票价 − 每张票的支付手续费）。分别算 200 令吉和 400 令吉。
+3. 用经营者一季真正能上课的周末数封顶（addition · 新增）。向本人询问，不要编造。
+4. 记录至少五个新山或吉隆坡同类工作坊的公开标价。每行要有网址和查看日期（addition · 新增）。
+5. 步骤 2–4 里的每个数字都有出处之后，才写结论。
+
+## 约束
+- 禁止编造价格、人数、征费规则或 CPE 规则。缺了就标明缺失，并写上该去哪一份材料里取。
+- 被引用的 MIA 或 HRD Corp 页面没有写明的，不得声称可认 CPE 或可向 HRD Corp 索赔（addition · 新增）。
+- 一页纸。深度在素材和盈亏平衡，不在把文章写长。
+
+## 输出格式
+- ## 素材 — 名称、网址或文件、日期
+- ## 盈亏平衡 — 200 令吉和 400 令吉各自的人数与周末数
+- ## 结论 — 一句话，只能是：做、不做、或只有在［条件］下才做。再加一句话，写明哪一个事实会让结论翻转。
+
+## 验证
+- 盈亏平衡里的每个数字都能追溯到列出的素材，或追溯到用户提供的数字。没有一个来自模型记忆。
+- 场地一行引用了 90 天内的书面报价，或者结论写明这份报价仍然缺失。
+- 任何关于 HRD Corp 或 MIA 的说法都带有页面网址和阅读日期。
+- 结论正好是「做」「不做」或「只有在某条件下才做」三者之一，并写明翻转条件。
+```
