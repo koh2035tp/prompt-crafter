@@ -1,8 +1,8 @@
 ---
 name: prompt-crafter
-version: 1.0.0
+version: 1.1.0
 author: wkloh76
-description: Turn messy, fragmented, or half-formed ideas into clear, AI-executable prompts. WAKE-WORD SKILL — it is silent by default and must never self-activate; use it only when the user's message begins with `pc` (e.g. "pc 帮我把这些想法写成 prompt") or when the user sends `/prompt-crafter`. Vague or fragmented input, ordinary coding/writing/analysis work, and even an explicit prompt request without the wake word must NOT trigger it. `pc help` prints the usage guide, `pc on` enables ambient mode for the session, `pc off` restores silent mode. Every crafted prompt ends with a checkable Verification section.
+description: Turn messy, fragmented, or half-formed ideas into clear, AI-executable prompts. WAKE-WORD SKILL — it is silent by default and must never self-activate; use it only when the user's message begins with `pc` (e.g. "pc 帮我把这些想法写成 prompt") or when the user sends `/prompt-crafter`. Vague or fragmented input, ordinary coding/writing/analysis work, and even an explicit prompt request without the wake word must NOT trigger it. `pc help` prints the usage guide, `pc on` enables ambient mode for the session, `pc off` restores silent mode. Opt-in Deep Mode starts with `pc deep` or `pc 深度` and runs an expert pre-analysis before crafting; a normal `pc` request is unchanged. Every crafted prompt ends with a checkable Verification section.
 ---
 
 # Prompt Crafter
@@ -18,11 +18,14 @@ description: Turn messy, fragmented, or half-formed ideas into clear, AI-executa
 - the user's message **starts with `pc`** (case-insensitive; optionally followed by `:`, `,`, `，`, `!` or a space) — everything after the wake word is the request; or
 - the user sends the slash command `/prompt-crafter`.
 
+Match the table in order. `pc deep` and `pc 深度` are not the catch-all row.
+
 | Input | Behavior |
 |---|---|
 | `pc help` / `pc usage` / `pc 帮助` / a bare `pc` | print the guide block below, verbatim, nothing else |
 | `pc on` | ambient mode for this session: from now on, the indirect signals in Section 1 also activate the workflow |
 | `pc off` | back to silent, wake-word-only mode (the default) |
+| `pc deep <request>` / `pc 深度 <请求>` | Deep Mode — Expert Pre-Analysis, then a deeper (not longer) prompt. See "Deep Mode" in Section 2. A normal `pc` request does not enter Deep Mode. |
 | `pc <anything else>` | that text is the request — start at Phase 1 |
 
 **NO WAKE WORD → NO ACTIVATION.** Not for ordinary coding, writing, or analysis, and not even for an explicit prompt request ("帮我写个 prompt", "turn this into a prompt", "fix my prompt"). Handle those as an ordinary assistant, and do not mention this skill.
@@ -45,9 +48,13 @@ description: Turn messy, fragmented, or half-formed ideas into clear, AI-executa
 - "pc improve / fix this prompt: …" · 「pc 帮我优化 / 改改这个 prompt：…」
 - "pc I want the AI to do X but don't know how to phrase it" · 「pc 我想让 AI 做 X，但不知道怎么跟它说」
 - "pc make a Claude Code prompt for …" · 「pc 写个 Claude Code 能用的 prompt，用来…」
+- "pc deep <request>" · 「pc 深度 <请求>」— deeper, not longer · 更深入，不是更长
 
 **模式 · Modes：** `pc on` 环境模式（模糊输入也自动接手）· `pc off` 回到暗语制
 **Modes:** `pc on` ambient mode · `pc off` wake-word-only
+
+**深度 · Deep Mode：** `pc deep <request>` · 「pc 深度 <请求>」— 更深入的版本，不是更长的版本。普通 `pc` 不变。
+**Deep Mode:** `pc deep <request>` · `pc 深度 <request>` — a deeper prompt, not a longer one. A normal `pc` request stays as it is.
 
 **帮助 · Help：** `pc help` · 「pc 帮助」
 
@@ -169,6 +176,83 @@ Want me to:
 - **The corrected version must be short.** If the user says the original is "too long," the fix should be shorter, not longer.
 - **Never rewrite the user's intent.** Fix the structure, not the goal.
 - **Always ask before proceeding.** Do NOT auto-advance to Phase 3 after a review.
+
+### Deep Mode (opt-in) — Expert Pre-Analysis · 专家预分析
+
+**Deeper, not longer. · 更深入的版本，不是更长的版本。**
+
+Deep Mode runs only when the message was invoked as `pc deep` or `pc 深度`. A normal `pc` request never enters Deep Mode, and Deep Mode never changes what a normal `pc` request does.
+
+**Recognize it before the catch-all.** After the wake word `pc`, the next token is `deep` or `深度` (case-insensitive for `deep`). An optional `:`, `：`, `,`, `，`, or space may separate the token from the request. Everything after that token is the request. `pc deep` or `pc 深度` with no request, or only whitespace, asks for two things and stops: the domain (领域) and the original question (我的题目). Do not craft yet. A bare `pc` still prints the guide. It is not Deep Mode.
+
+**When it runs.** Finish Phase 1 and Phase 2 first, including the 2–3 clarifying questions when a gap blocks the prompt. If the Prompt Review Gate applies, finish that gate and wait for the user — Deep Mode does not skip the wait and does not rewrite during the review. Once the user has passed the gate, or when the gate does not apply, print the Expert Pre-Analysis below and then craft in the same turn. When the gate says "proceed to Phase 3", that means proceed to the next step. In Deep Mode the next step is this pre-analysis, then Phase 3. Do not wait for approval of the pre-analysis. Additions stay labeled so the user can drop them.
+
+**The five questions.** Answer each one before rewriting. At most 5 bullets per question, ranked, most important first. Write the bullets in the user's language. Keep the question headings bilingual, with the approved Chinese wording first. If you do not know the domain well enough to name a real source, method, or check, say so on that question and ask for one reference. Do not invent sources, tools, datasets, or numbers.
+
+Approved wording:
+
+> 在改写之前，请先回答以下问题，每点最多 5 条，按重要性排序：
+> (1) 这个领域的顶尖专家会做哪些我没要求的事？
+> (2) 他们会从哪些最原始的素材入手，而不是我已经整理好的资料？
+> (3) 他们会用哪些具体的方法和工具？
+> (4) 除了你我之外，还有什么可以证明结果是正确的？
+> (5) 哪些关键数据我目前没有，该怎么取得？
+> 然后改写我的题目。新题目必须写明要用的原始素材、分析方法和验证方式，并在结尾给出明确结论。
+
+English, same five questions:
+
+1. What would a top expert in this domain do that the user did not ask for?
+2. Which primary sources would they start from, instead of material the user already digested?
+3. Which concrete methods and tools would they use?
+4. What, besides the model and the user, can show the result is correct?
+5. Which key data are missing, and how does the user get them?
+
+**Print this block, outside the prompt code block:**
+
+```
+## Expert Pre-Analysis · 专家预分析
+
+Deeper, not longer. · 更深入，不是更长。
+Domain · 领域: [named domain]
+Original question · 原题: [the user's question, unchanged]
+
+### (1) 这个领域的顶尖专家会做哪些我没要求的事？
+What a top expert would do that you did not ask for
+1. [most important] — addition · 新增
+2. ...
+
+### (2) 他们会从哪些最原始的素材入手，而不是我已经整理好的资料？
+Primary sources they would open, not material you already digested
+1. ...
+
+### (3) 他们会用哪些具体的方法和工具？
+Concrete methods and tools
+1. ...
+
+### (4) 除了你我之外，还有什么可以证明结果是正确的？
+External evidence that the result is correct
+1. ...
+
+### (5) 哪些关键数据我目前没有，该怎么取得？
+Key data you lack, and how to get it
+1. ...
+```
+
+A bullet that only restates what the user already asked for is not labeled. Every bullet that goes beyond the user's request ends with `addition · 新增`. Rank within each question. Stop at five. Omit a question's empty tail rather than padding it.
+
+**Then rewrite (Phase 3) with these rules on top of the normal template.** Normal crafting rules still apply. Deep Mode adds the following, and does not replace them:
+
+- **Context** names the primary sources from question (2). A source the user did not name is labeled `addition · 新增`.
+- **Steps** name the methods and tools from question (3). Each step is one concrete action. Label additions.
+- **Verification** names the external evidence from question (4). Each check must be something outside the model and the user: a document, a quote, a dataset, a filing, a third party. "The model is confident" is not evidence. Each check must be specific enough to pass or fail.
+- **Question (5)** becomes a step that says how to obtain the missing data, or a labeled assumption when the user cannot obtain it yet. Never invent the missing number.
+- **Output Format** requires a clear conclusion. The deliverable ends with one decision, recommendation, or answer, in a sentence, plus the condition that would change it.
+- **Depth over length.** Do not add sections, adjectives, or background to make the prompt longer. If an addition does not change a source, a method, a check, or the conclusion, leave it out of the prompt. The pre-analysis is not copied verbatim into the prompt.
+- Keep the label `addition · 新增` on every added line inside the crafted prompt, so the user can delete that line and the rest still stands.
+
+**Anti-pattern exception.** Deep Mode deliberately relaxes "Do not add requirements the user didn't ask for." The relaxation applies only in Deep Mode. An addition is allowed only when it appears in this pre-analysis and stays labeled. A normal `pc` request still forbids unrequested requirements.
+
+**Delivery.** Show the pre-analysis in full, then the crafted prompt in a code block (Phase 4). The one-line summary states the decision the prompt forces. Close with: "Say which 新增 / addition lines to drop and I will recraft without them."
 
 ### Phase 3 — CRAFT: Build the Structured Prompt
 
@@ -330,6 +414,13 @@ Before delivering the final prompt, verify:
 - [ ] **Agent-appropriate** — is the format adapted to the target platform?
 - [ ] **Verification section present** — does the prompt end with explicit, checkable verification steps the executor MUST run before declaring completion? For delegated/multi-step tasks, this is mandatory. For simple one-shot tasks, a single-line check is sufficient.
 
+**Deep Mode only** — also confirm, and fix the prompt before delivery if any item fails:
+
+- [ ] The Expert Pre-Analysis was printed first, with all five questions, at most five ranked bullets each.
+- [ ] Context names primary sources, Steps name methods and tools, Verification names external evidence, and Output Format requires a clear conclusion.
+- [ ] Every addition is labeled `addition · 新增` in both the pre-analysis and the prompt. Nothing beyond the user's request is unlabeled.
+- [ ] The prompt is deeper, not longer. No line exists only to add length.
+
 ---
 
 ## 5. ANTI-PATTERNS (What NOT to Do)
@@ -340,6 +431,8 @@ Before delivering the final prompt, verify:
 - **Do not bury the task.** If the AI has to read 300 words before understanding what to do, the prompt is backwards.
 - **Do not ask more than 3 clarifying questions.** If you still have gaps, make reasonable assumptions and flag them: "I assumed X — let me know if that's wrong."
 - **Do not deliver without the quality checklist.** A prompt that fails any checklist item MUST be fixed before delivery. Do NOT deliver a prompt with known checklist failures.
+
+**Deep Mode exception.** Only `pc deep` / `pc 深度` deliberately relaxes "Do not add requirements the user didn't ask for." Expert additions are allowed in that mode alone. Each one must appear in the Expert Pre-Analysis and be labeled `addition · 新增` inside the crafted prompt so the user can drop it. A normal `pc` request still follows the bullet above with no exception.
 
 ---
 

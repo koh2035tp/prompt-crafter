@@ -6,6 +6,8 @@
 
 > **Disclaimer:** This project is developed entirely in my personal time, using my own equipment and resources. It is not affiliated with, endorsed by, or related to my employer. No proprietary company information, code, or resources were used in the creation of this project.
 
+> **Fork note:** koh2035tp adds opt-in Deep Mode (`pc deep` / `pc 深度`) to the original skill by wkloh76. The license and the author credit are unchanged. The install commands below still point at `wkloh76/prompt-crafter`, which does not include Deep Mode. This fork is `https://github.com/koh2035tp/prompt-crafter`.
+
 ---
 
 ## The Problem
@@ -54,7 +56,7 @@ A markdown document: # PR Checklist → ## Before You Submit →
 ## During Review → ## Review Quality Guidelines
 ```
 
-See [`examples.md`](examples.md) for 9 bilingual (EN/ZH) before/after demonstrations.
+See [`examples.md`](examples.md) for 10 bilingual (EN/ZH) before/after demonstrations, including one Deep Mode case.
 
 ---
 
@@ -69,7 +71,7 @@ Prompt Crafter follows a 4-phase workflow:
 | **3. Craft** | Build the prompt from a universal template: Role → Task → Context → Steps → Constraints → Output Format → Examples. |
 | **4. Deliver** | Present the prompt in a copyable code block, add a one-line summary, and offer iteration. |
 
-Every output is verified against a 9-item quality checklist (clarity, enforceability, ambiguity, contradictions, platform fit, etc.).
+Every output is verified against a 9-item quality checklist (clarity, enforceability, ambiguity, contradictions, platform fit, etc.). Deep Mode adds four checks: the five-question pre-analysis was shown, additions are labeled, the prompt names sources and external evidence, and the prompt got deeper rather than longer.
 
 ---
 
@@ -102,7 +104,7 @@ prompt-crafter/
 ├── .cursorrules      # Cursor instructions
 ├── .windsurfrules    # Windsurf instructions
 ├── drivers.md       # Collection of trigger phrases (EN/ZH) for testing
-├── examples.md      # 9 full before/after examples (bilingual EN/ZH)
+├── examples.md      # 10 full before/after examples (bilingual EN/ZH), including Deep Mode
 ├── CHANGELOG.md      # Version history (Keep a Changelog)
 ├── README.md         # This file
 └── License           # License
@@ -204,13 +206,35 @@ pc 帮我写个 prompt，让它根据用户调研提炼核心痛点
 pc write a claude code prompt for generating commit messages
 
 pc help        # re-display the usage guide
+
+pc deep 评估在新山办 AI 讲座这门生意能不能做
+
+pc 深度 is a weekend AI seminar in Johor Bahru viable? Deeper, not longer.
 ```
+
+### Deep Mode · 深度模式
+
+Deep Mode is opt-in. A normal `pc` request does not enter it, and Deep Mode does not change a normal `pc` request.
+
+Start the message with `pc deep` or `pc 深度` when you want a deeper prompt, not a longer one. Intake and Triage still run first. If the Prompt Review Gate applies, that gate still waits for you. Then, before the prompt is written, the skill prints an **Expert Pre-Analysis · 专家预分析**. It answers five questions, at most five bullets each, ranked by importance:
+
+1. What would a top expert in this domain do that you did not ask for? · 这个领域的顶尖专家会做哪些我没要求的事？
+2. Which primary sources would they open, instead of material you already digested? · 他们会从哪些最原始的素材入手，而不是我已经整理好的资料？
+3. Which concrete methods and tools would they use? · 他们会用哪些具体的方法和工具？
+4. What, besides you and the model, can show the result is correct? · 除了你我之外，还有什么可以证明结果是正确的？
+5. Which key data are you missing, and how do you get them? · 哪些关键数据我目前没有，该怎么取得？
+
+The rewritten prompt then names those primary sources, methods, and external checks in Context, Steps, and Verification, and the Output Format requires a clear conclusion. This is the one place the skill may add a requirement you did not ask for. Every addition is shown in the pre-analysis and labeled `addition` / `新增` inside the prompt, so you can delete that line. Say which labeled lines to drop and it recrafts without them.
+
+`pc deep` or `pc 深度` with nothing after it asks for the domain (领域) and the original question (我的题目), and does not craft yet.
+
+See [`examples.md`](examples.md) 范例 10 for a full before/after (an AI seminar business in Johor Bahru), and [`drivers.md`](drivers.md) for Deep Mode trigger lines.
 
 See [`drivers.md`](drivers.md) for a full collection of trigger phrases to test with.
 
 ## Testing
 
-Use [`drivers.md`](drivers.md) to verify the skill is working. Prefix any line with the wake word (`pc <line>`), paste it into your AI coding tool, and confirm it follows the 4-phase workflow and produces a structured prompt. A bare line without the wake word must produce no reaction at all — that is the negative test.
+Use [`drivers.md`](drivers.md) to verify the skill is working. Prefix any line with the wake word (`pc <line>`), paste it into your AI coding tool, and confirm it follows the 4-phase workflow and produces a structured prompt. A bare line without the wake word must produce no reaction at all — that is the negative test. Lines in the Deep Mode section already start with `pc deep` or `pc 深度`; do not put another `pc` in front of them. A normal `pc` in front of the same request must not print the Expert Pre-Analysis.
 
 ---
 
@@ -220,7 +244,7 @@ Use [`drivers.md`](drivers.md) to verify the skill is working. Prefix any line w
 - **Front-load the task.** The AI should know what to do within the first paragraph.
 - **Constraints are gates.** Imperative language: "Do X", "Never Y", "Always Z".
 - **Examples over explanations.** One concrete example is worth a thousand words of description.
-- **No scope creep.** Refine structure — don't rewrite intent or add unrequested features.
+- **No scope creep.** Refine structure — don't rewrite intent or add unrequested features. Deep Mode is the labeled exception: an expert addition must be shown in the pre-analysis and marked `addition` / `新增`, so you can drop it.
 - **Deliberate minimalism.** This is a single-skill project. No build tools, no dependencies, no runtime.
 
 ---

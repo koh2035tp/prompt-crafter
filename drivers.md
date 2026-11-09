@@ -143,3 +143,15 @@
 > no matter how i ask, the AI keeps doing the wrong thing. here's what i told it: "[paste]". how should i phrase it?
 
 > 不管我怎么说，AI 总是做错。我给它的是：「[粘贴]」。我该怎么跟它说才对？
+
+## 深度模式 / Deep Mode
+
+These lines already include the wake word. `pc deep` and `pc 深度` enter Deep Mode. The same words after a plain `pc` must stay on the normal path: no Expert Pre-Analysis, and no added requirements.
+
+> pc deep I'm thinking of running paid AI seminars in Johor Bahru for accountants and SME owners. Weekend classes, about RM200–400 a head. Write a prompt that tells me if this business is viable. Deeper, not longer.
+
+> pc 深度 我想在新山办 AI 讲座，对象是会计师和中小企业老板，周末班，一个人大概收 200 到 400 令吉。帮我写个 prompt，判断这门生意能不能做。我要更深入的版本，不是更长的版本。
+
+> pc deep: I only have a competitor's brochure. Rewrite my prompt so it starts from primary sources and ends with a go or no-go.
+
+> pc 深度：这段题目太浅。领域是新山的短期培训。我的题目是「这个 AI 讲座能不能做」。先回答那五个问题，再改写，不要把它写长。

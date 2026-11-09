@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`npx skills add` installation path** — the README documents installing the skill with the [skills](https://github.com/vercel-labs/skills) CLI for Claude Code, Codex, Cursor, and Kimi Code CLI, including the project and global directory each agent scans (Codex, Cursor and Kimi Code CLI share one copy under `.agents/skills/`; Claude Code is symlinked to it). Completed on 2026-09-21
 
+## [1.1.0] - 2026-11-09
+
+### Added
+
+- **Deep Mode (`pc deep` / `pc 深度`)** — opt-in path in `SKILL.md` and in every platform file (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`). After Triage, and after the Prompt Review Gate when that gate applies, the skill prints an Expert Pre-Analysis. It answers five questions, at most five ranked bullets each: what a top expert would do unasked, which primary sources they would open, which methods and tools they would use, which external evidence can prove the result, and which key data is missing and how to get it. It then rewrites the prompt so Context, Steps, and Verification name those sources, methods, and checks, and the Output Format requires a clear conclusion. Deeper, not longer. Completed on 2026-11-09
+- **Labeled exception to scope creep** — expert additions are allowed only in Deep Mode. Each one must appear in the pre-analysis and be labeled `addition` / `新增` so the user can drop it. A normal `pc` request is unchanged and still forbids unrequested requirements. Completed on 2026-11-09
+- **Guide and wake-word table** — `pc deep` and `pc 深度` added to the bilingual usage guide and to the wake-word table, matched before the catch-all `pc` request. Completed on 2026-11-09
+- **`examples.md`** — bilingual Deep Mode before/after (范例 10): viability of an AI seminar business in Johor Bahru, including the Expert Pre-Analysis and the rewritten prompt. Completed on 2026-11-09
+- **`drivers.md`** — Deep Mode trigger lines in English and 中文. A plain `pc` in front of the same words must stay on the normal path. Completed on 2026-11-09
+- **README** — Deep Mode documented under Usage, plus a fork line crediting koh2035tp for the addition. Original license and author credit (wkloh76) unchanged. Completed on 2026-11-09
+
+### Changed
+
+- **`SKILL.md` version** — frontmatter `version` bumped from `1.0.0` to `1.1.0`. The `author` field remains `wkloh76`. Completed on 2026-11-09
+
 ## [1.0.0] - 2026-09-21
 
 First public release.
@@ -31,5 +46,6 @@ First public release.
 
 - The YAML frontmatter `description` contained an unquoted colon-space (`self-activate:`), which broke frontmatter parsing and caused skill discovery (e.g. kimi-code) to skip `SKILL.md` entirely. The colon was replaced with a semicolon so the frontmatter parses and the skill loads.
 
-[Unreleased]: https://github.com/wkloh76/prompt-crafter/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/koh2035tp/prompt-crafter/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/koh2035tp/prompt-crafter/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/wkloh76/prompt-crafter/releases/tag/v1.0.0
